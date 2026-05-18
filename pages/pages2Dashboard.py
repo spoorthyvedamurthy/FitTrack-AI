@@ -10,9 +10,9 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.page_link("pages/2_Dashboard.py", label="📊 Dashboard")
-st.page_link("pages/3_Analytics.py", label="📈 Analytics")
-st.page_link("pages/4_Prediction.py", label="🤖 Prediction")
+st.page_link("2_Dashboard.py", label="📊 Dashboard")
+st.page_link("3_Analytics.py", label="📈 Analytics")
+st.page_link("4_Prediction.py", label="🤖 Prediction")
 
 
 # Page Title
