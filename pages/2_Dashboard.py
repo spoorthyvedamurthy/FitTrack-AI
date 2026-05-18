@@ -1,13 +1,73 @@
 import streamlit as st
 
-# Page Title
-st.title("📊 FitTrack AI Dashboard")
+# ---------------- PAGE CONFIG ----------------
+
+st.set_page_config(
+    page_title="FitTrack AI Dashboard",
+    page_icon="🏋️",
+    layout="wide"
+)
+
+# ---------------- CUSTOM CSS ----------------
+
+st.markdown("""
+<style>
+
+div[data-testid="metric-container"] {
+    background-color: #111827;
+    border: 1px solid #374151;
+    padding: 15px;
+    border-radius: 15px;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# ---------------- TITLE ----------------
+
+st.title("🏋️ FitTrack AI Dashboard")
 
 st.write(
     "Monitor fitness metrics, workout performance, and health analytics."
 )
 
-# ---------------- USER SUMMARY ----------------
+# ---------------- USER INPUTS ----------------
+
+st.subheader("📝 Enter Health Details")
+
+col1, col2 = st.columns(2)
+
+with col1:
+
+    calories = st.number_input(
+        "🔥 Calories Burned",
+        min_value=0,
+        value=420
+    )
+
+    bmi = st.number_input(
+        "⚖️ BMI",
+        min_value=10.0,
+        max_value=50.0,
+        value=22.4
+    )
+
+with col2:
+
+    heart_rate = st.number_input(
+        "❤️ Heart Rate",
+        min_value=40,
+        max_value=200,
+        value=98
+    )
+
+    workout_time = st.number_input(
+        "🏃 Workout Time (min)",
+        min_value=0,
+        value=60
+    )
+
+# ---------------- HEALTH SUMMARY ----------------
 
 st.subheader("👤 User Health Summary")
 
@@ -16,32 +76,32 @@ c1, c2, c3, c4 = st.columns(4)
 with c1:
     st.metric(
         "🔥 Calories Burned",
-        "420"
+        calories
     )
 
 with c2:
     st.metric(
         "⚖️ BMI",
-        "22.4"
+        bmi
     )
 
 with c3:
     st.metric(
         "❤️ Heart Rate",
-        "98 BPM"
+        f"{heart_rate} BPM"
     )
 
 with c4:
     st.metric(
         "🏃 Workout Time",
-        "60 min"
+        f"{workout_time} min"
     )
 
 # ---------------- FITNESS SCORE ----------------
 
 st.subheader("⭐ Fitness Score")
 
-fitness_score = 82
+fitness_score = min(100, int((calories / 10) + (workout_time / 2)))
 
 st.progress(fitness_score / 100)
 
@@ -53,27 +113,38 @@ st.success(
 
 st.subheader("📈 Health Status")
 
-col1, col2 = st.columns(2)
+col3, col4 = st.columns(2)
 
-with col1:
+with col3:
 
-    st.info(
-        "✅ BMI is within healthy range."
-    )
+    if bmi < 18.5:
+        st.warning("⚠️ Underweight BMI detected.")
 
-    st.success(
-        "💪 Workout consistency is excellent."
-    )
+    elif bmi < 25:
+        st.success("✅ BMI is within healthy range.")
 
-with col2:
+    else:
+        st.error("⚠️ Overweight BMI detected.")
 
-    st.warning(
-        "💧 Increase daily hydration slightly."
-    )
+    if workout_time >= 60:
+        st.success("💪 Workout consistency is excellent.")
 
-    st.info(
-        "🏃 Cardio performance is improving."
-    )
+    else:
+        st.info("🏃 Increase workout duration for better results.")
+
+with col4:
+
+    if heart_rate > 120:
+        st.warning("❤️ High heart rate detected.")
+
+    else:
+        st.success("❤️ Heart rate is within normal range.")
+
+    if calories > 500:
+        st.success("🔥 Excellent calorie burn achieved.")
+
+    else:
+        st.info("🔥 Increase workout intensity slightly.")
 
 # ---------------- DAILY GOALS ----------------
 
@@ -81,52 +152,77 @@ st.subheader("🎯 Daily Goals")
 
 goal1 = st.checkbox(
     "30 Minutes Workout",
-    value=True
+    value=workout_time >= 30
 )
 
 goal2 = st.checkbox(
-    "Drink 3L Water",
-    value=False
+    "Burn 400 Calories",
+    value=calories >= 400
 )
 
 goal3 = st.checkbox(
-    "Burn 400 Calories",
-    value=True
+    "Maintain Healthy BMI",
+    value=(18.5 <= bmi <= 24.9)
 )
 
 goal4 = st.checkbox(
-    "Sleep 8 Hours",
-    value=False
+    "Maintain Heart Rate",
+    value=(60 <= heart_rate <= 120)
 )
 
 # ---------------- AI RECOMMENDATIONS ----------------
 
 st.subheader("🤖 AI Recommendations")
 
-st.success(
-    "Maintain current workout consistency for improved endurance."
-)
+if calories > 500:
 
-st.info(
-    "Recommended: Increase hydration and include stretching exercises."
-)
+    st.success(
+        "Excellent workout performance! Maintain hydration and recovery."
+    )
 
-st.warning(
-    "Monitor sleep schedule for better recovery performance."
-)
+elif calories > 300:
+
+    st.info(
+        "Good performance. Increase workout consistency for better endurance."
+    )
+
+else:
+
+    st.warning(
+        "Increase workout intensity and cardio activity."
+    )
+
+if bmi > 25:
+
+    st.warning(
+        "Recommended: Weight management and balanced nutrition."
+    )
+
+elif bmi < 18.5:
+
+    st.info(
+        "Recommended: Nutrient-rich diet and strength training."
+    )
+
+else:
+
+    st.success(
+        "BMI is balanced. Maintain current fitness routine."
+    )
 
 # ---------------- QUICK INSIGHTS ----------------
 
 st.subheader("📌 Quick Insights")
 
 st.write("""
-- Consistent workouts improve cardiovascular performance.
+- Regular workouts improve cardiovascular performance.
 - Balanced nutrition supports better calorie management.
-- Hydration plays an important role in workout recovery.
-- Regular exercise improves overall fitness score.
+- Proper hydration improves workout recovery.
+- Consistent exercise increases fitness score.
 """)
 
-# Footer
+# ---------------- FOOTER ----------------
+
 st.markdown("---")
 
-st.caption("FitTrack AI | Intelligent Fitness Dashboard")
+st.caption("FitTrack AI | Intelligent Fitness Analytics System")
